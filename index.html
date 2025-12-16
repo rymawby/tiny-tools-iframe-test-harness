@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Iframe postMessage Harness</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="page">
+    <header class="banner">
+      <div>
+        <p class="eyebrow">Sandbox</p>
+        <h1>iframe postMessage harness</h1>
+        <p class="lede">Send text to the iframe with <code>postMessage</code>, and watch the iframe echo what it receives.</p>
+      </div>
+      <div class="status">
+        <span class="dot" aria-hidden="true"></span>
+        <span id="status-text">Waiting for messages</span>
+      </div>
+    </header>
+
+    <section class="panel">
+      <div class="panel__header">
+        <div>
+          <p class="eyebrow">Host page</p>
+          <h2>Message sender</h2>
+        </div>
+        <button id="send-btn" type="button">Send to iframe</button>
+      </div>
+      <div class="field">
+        <label for="message">Message to send</label>
+        <textarea id="message" name="message" rows="4" placeholder="Type anything and click Send"></textarea>
+      </div>
+      <div class="field">
+        <label for="target-origin">Target origin</label>
+        <input id="target-origin" name="target-origin" type="text" value="*" autocomplete="off">
+        <p class="hint">Use <code>*</code> for local testing or set a specific origin when needed.</p>
+      </div>
+      <p class="hint">Open the browser devtools console to see the raw <code>postMessage</code> payloads.</p>
+    </section>
+
+    <section class="panel">
+      <div class="panel__header">
+        <div>
+          <p class="eyebrow">Iframe</p>
+          <h2>Embedded listener</h2>
+        </div>
+        <button id="reset-btn" type="button">Clear iframe</button>
+      </div>
+      <div class="field">
+        <label for="frame-src">Iframe URL</label>
+        <div class="input-row">
+          <input id="frame-src" name="frame-src" type="text" value="receiver.html" autocomplete="off" spellcheck="false">
+          <button id="load-btn" type="button">Load iframe</button>
+        </div>
+        <p class="hint">Defaults to the bundled <code>receiver.html</code>. You can point at any reachable URL for testing.</p>
+      </div>
+      <div class="frame-meta">
+        <div>
+          <p class="eyebrow">Current iframe</p>
+          <p id="frame-label" class="frame-url">receiver.html</p>
+        </div>
+        <a id="frame-open" class="ghost-button" href="receiver.html" target="_blank" rel="noreferrer noopener">Open in new tab</a>
+      </div>
+      <div class="frame-wrap">
+        <iframe id="demo-frame" title="Message target" src="receiver.html"></iframe>
+      </div>
+    </section>
+  </main>
+
+  <script src="main.js" type="module"></script>
+</body>
+</html>

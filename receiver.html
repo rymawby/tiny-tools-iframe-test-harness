@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Iframe listener</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #fcfcfc;
+      --panel: #ffffff;
+      --text: #333333;
+      --muted: #666666;
+      --accent: #1abc9c;
+      --stroke: #eeeeee;
+      font-family: "Roboto", "Helvetica Neue", system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: var(--panel);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+    }
+
+    .receiver__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--stroke);
+      background: #f6f6f6;
+    }
+
+    .receiver__body {
+      padding: 14px;
+      font-family: "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
+      color: #333333;
+      word-break: break-word;
+      white-space: pre-wrap;
+      flex: 1;
+    }
+
+    .receiver__note {
+      color: var(--muted);
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="receiver__header">
+    <div>
+      <div class="receiver__note">Iframe listener</div>
+      <strong id="origin-label">Waiting for messages…</strong>
+    </div>
+    <div class="receiver__note" id="timestamp">—</div>
+  </div>
+  <pre id="output" class="receiver__body">Send a message from the host page to see it here.</pre>
+
+  <script>
+    const output = document.getElementById('output');
+    const originLabel = document.getElementById('origin-label');
+    const timestamp = document.getElementById('timestamp');
+
+    window.addEventListener('message', (event) => {
+      const originText = event.origin || 'file://';
+      originLabel.textContent = `From ${originText}`;
+      timestamp.textContent = new Date().toLocaleTimeString();
+
+      let display = '';
+      if (typeof event.data === 'string') {
+        display = event.data;
+      } else {
+        try {
+          display = JSON.stringify(event.data, null, 2);
+        } catch (err) {
+          display = String(event.data);
+        }
+      }
+
+      output.textContent = display || '(empty payload)';
+
+      if (event.source && typeof event.source.postMessage === 'function') {
+        const target = event.origin && event.origin !== 'null' ? event.origin : '*';
+        event.source.postMessage(
+          {
+            type: 'ack',
+            text: 'iframe received your message',
+            receivedAt: new Date().toISOString(),
+          },
+          target
+        );
+      }
+    });
+  </script>
+</body>
+</html>
