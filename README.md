@@ -1,6 +1,9 @@
 # iframe-post-message-harness
 
-A tiny, static harness to test `postMessage` interactions between a host page and an embedded iframe. Built quickly with a bit of help from AI.
+A tiny, static harness to test `postMessage` interactions between a host page and an embedded iframe. 
+
+[![Certified Shovelware](https://justin.searls.co/img/shovelware.svg)](https://justin.searls.co/shovelware/)
+
 
 ## What it does
 - Lets you load any iframe URL (defaults to the bundled `receiver.html`).

@@ -6,11 +6,15 @@ const loadBtn = document.getElementById('load-btn');
 const frameSrcInput = document.getElementById('frame-src');
 const frameLabel = document.getElementById('frame-label');
 const frameOpen = document.getElementById('frame-open');
+const reloadBtn = document.getElementById('reload-btn');
 const statusText = document.getElementById('status-text');
 const iframe = document.getElementById('demo-frame');
+const modeText = document.getElementById('mode-text');
+const modeJson = document.getElementById('mode-json');
 
 let frameReady = false;
 const DEFAULT_SRC = 'receiver.html';
+let currentFrameUrl = DEFAULT_SRC;
 
 const setStatus = (text) => {
   statusText.textContent = text;
@@ -19,10 +23,12 @@ const setStatus = (text) => {
 const loadIframe = (src) => {
   const url = (src || DEFAULT_SRC).trim() || DEFAULT_SRC;
   frameReady = false;
+  currentFrameUrl = url;
   setStatus(`Loading iframe: ${url}`);
   iframe.src = url;
   frameLabel.textContent = url;
   frameOpen.href = url;
+  frameSrcInput.value = url;
   try {
     const parsed = new URL(url, window.location.href);
     targetOriginInput.value = parsed.origin;
@@ -37,17 +43,30 @@ const sendMessage = () => {
     return;
   }
 
-  const text = messageInput.value.trim();
-  if (!text) {
+  const raw = messageInput.value.trim();
+  if (!raw) {
     setStatus('Type a message first');
     return;
   }
 
-  const payload = {
-    text,
-    sentAt: new Date().toISOString(),
-    id: crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(16).slice(2),
-  };
+  const isJsonMode = modeJson.checked;
+  let payload = raw;
+
+  if (isJsonMode) {
+    try {
+      payload = JSON.parse(raw);
+    } catch (err) {
+      setStatus('Invalid JSON. Please fix and try again.');
+      console.error('[host] JSON parse failed', err);
+      return;
+    }
+  } else {
+    payload = {
+      text: raw,
+      sentAt: new Date().toISOString(),
+      id: crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(16).slice(2),
+    };
+  }
 
   const targetOrigin = targetOriginInput.value || '*';
 
@@ -70,6 +89,7 @@ const resetIframe = () => {
 sendBtn.addEventListener('click', sendMessage);
 resetBtn.addEventListener('click', resetIframe);
 loadBtn.addEventListener('click', () => loadIframe(frameSrcInput.value));
+reloadBtn.addEventListener('click', () => loadIframe(currentFrameUrl));
 
 iframe.addEventListener('load', () => {
   frameReady = true;

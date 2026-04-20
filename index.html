@@ -29,6 +29,13 @@
         <button id="send-btn" type="button">Send to iframe</button>
       </div>
       <div class="field">
+        <label for="message-mode">Payload type</label>
+        <div class="radio-row">
+          <label class="pill"><input type="radio" name="message-mode" id="mode-text" value="text" checked> Text (wrapped with id/timestamp)</label>
+          <label class="pill"><input type="radio" name="message-mode" id="mode-json" value="json"> JSON (send exactly as provided)</label>
+        </div>
+      </div>
+      <div class="field">
         <label for="message">Message to send</label>
         <textarea id="message" name="message" rows="4" placeholder="Type anything and click Send"></textarea>
       </div>
@@ -46,7 +53,10 @@
           <p class="eyebrow">Iframe</p>
           <h2>Embedded listener</h2>
         </div>
-        <button id="reset-btn" type="button">Clear iframe</button>
+        <div class="actions">
+          <button id="reload-btn" class="ghost-button" type="button">Reload iframe</button>
+          <button id="reset-btn" type="button">Clear iframe</button>
+        </div>
       </div>
       <div class="field">
         <label for="frame-src">Iframe URL</label>
